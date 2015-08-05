@@ -1,0 +1,6 @@
+venv/
+
+# Eclipse files
+.project
+.settings/
+.buildpath
