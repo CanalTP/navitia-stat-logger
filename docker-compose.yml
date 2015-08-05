@@ -1,0 +1,5 @@
+worker:
+  image: canaltp/stat-persistor
+  command: 
+  volumes:
+    - /home/vlepot/dev/navitia-stat-logger:/srv/stat-logger
