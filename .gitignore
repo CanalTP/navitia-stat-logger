@@ -1,5 +1,7 @@
 venv/
 /tmp/
+*_pb2.py
+*.pyc
 
 # Eclipse files
 .project
