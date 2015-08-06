@@ -1,0 +1,20 @@
+rabbitmq:
+  broker-url: "amqp://guest:guest@par-vm147.srv.canaltp.fr:5672//"
+  #broker-url: "amqp://guest:guest@rabbitmq:5672//"
+  exchange-name: "stat_persistor_exchange"
+#logger:
+#  version: 1
+#  disable_existing_loggers: false
+#  formatters:
+#    default:
+#      format: "[%(asctime)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s"
+#  handlers:
+#    default:
+#      level: "DEBUG"
+#      class: "logging.StreamHandler"
+#      formatter: "default"
+#  loggers:
+#    -
+#      handlers: ["default"]
+#      level: DEBUG
+#      propagate: true
