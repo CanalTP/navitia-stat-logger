@@ -5,6 +5,7 @@ import json
 from protobuf_to_dict import protobuf_to_dict
 import kombu
 from kombu.mixins import ConsumerMixin
+from datetime import datetime
 
 class Daemon(ConsumerMixin):
     def __init__(self, config):
@@ -13,7 +14,7 @@ class Daemon(ConsumerMixin):
         self.config = config
         print self.config
         self._init_rabbitmq()
-        self.logfile = open('/tmp/stat_log_prod.json.log', 'a')
+        self.logfile = open('/tmp/stat_log_prod_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.json.log', 'a')
 
     def _init_rabbitmq(self):
         """
