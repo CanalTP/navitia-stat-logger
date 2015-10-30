@@ -1,20 +1,28 @@
+storage:
+  hdfs: false
+  localfs: true
 rabbitmq:
-  broker-url: "amqp://guest:guest@par-vm147.srv.canaltp.fr:5672//"
-  #broker-url: "amqp://guest:guest@rabbitmq:5672//"
+  broker-url: "amqp://guest:guest@vippriv-brokk-mq.mutu.prod.canaltp.fr:5672//"
+  #broker-url: "amqp://guest:guest@par-vm147.srv.canaltp.fr:5672//"
   exchange-name: "stat_persistor_exchange"
-#logger:
-#  version: 1
-#  disable_existing_loggers: false
-#  formatters:
-#    default:
-#      format: "[%(asctime)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s"
-#  handlers:
-#    default:
-#      level: "DEBUG"
-#      class: "logging.StreamHandler"
-#      formatter: "default"
-#  loggers:
-#    -
-#      handlers: ["default"]
-#      level: DEBUG
-#      propagate: true
+webhdfs:
+  host: "172.17.42.1"
+  port: 50070
+  filename_template: "/user/guest/stats_{request_date}.log"
+  timeout: 10
+logger:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    default:
+      format: "[%(asctime)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s"
+  handlers:
+    default:
+      level: "DEBUG"
+      class: "logging.StreamHandler"
+      formatter: "default"
+  loggers:
+    -
+      handlers: ["default"]
+      level: DEBUG
+      propagate: true

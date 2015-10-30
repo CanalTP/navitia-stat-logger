@@ -4,3 +4,4 @@ pyyaml
 kombu==3.0.26
 protobuf
 protobuf-to-dict
+pywebhdfs

@@ -6,15 +6,21 @@ from protobuf_to_dict import protobuf_to_dict
 import kombu
 from kombu.mixins import ConsumerMixin
 from datetime import datetime
+from pywebhdfs.webhdfs import PyWebHdfsClient
+
 
 class Daemon(ConsumerMixin):
     def __init__(self, config):
         self.connection = None
         self.queues = []
         self.config = config
-        print self.config
         self._init_rabbitmq()
-        self.logfile = open('/tmp/stat_log_prod_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.json.log', 'a')
+        if self.config['storage']['localfs']:
+            self.logfile = open('/tmp/stat_log_prod_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.json.log', 'a')
+        # Initialize WebHDFS client
+        if self.config['storage']['hdfs']:
+            self.hdfs = PyWebHdfsClient(host=config['webhdfs']['host'], port=config['webhdfs']['port'], timeout=config['webhdfs']['timeout'])
+            self.filename_template = config['webhdfs']['filename_template']
 
     def _init_rabbitmq(self):
         """
@@ -48,8 +54,19 @@ class Daemon(ConsumerMixin):
 
     def log_message(self, stat_hit):
         if stat_hit.IsInitialized():
-            self.logfile.write(json.dumps(protobuf_to_dict(stat_hit), separators=(',',':')) + '\n')
-            self.logfile.flush()
+            content = json.dumps(protobuf_to_dict(stat_hit), separators=(',', ':')) + '\n'
+
+            if self.config['storage']['localfs']:
+                self.logfile.write(content)
+                self.logfile.flush()
+
+            if self.config['storage']['hdfs']:
+                target_filename = self.filename_template.replace('{request_date}', datetime.utcfromtimestamp(stat_hit.request_date).strftime('%Y%m%d'))
+                print target_filename
+                try:
+                    self.hdfs.append_file(target_filename, content)
+                except Exception as e:
+                    print e
 
     def __del__(self):
         self.close()
