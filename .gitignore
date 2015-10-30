@@ -8,3 +8,9 @@ venv/
 .settings/
 .buildpath
 .pydevproject
+
+# Netbeans
+/nbproject
+
+# PyCharm / IntelliJ
+/.idea
