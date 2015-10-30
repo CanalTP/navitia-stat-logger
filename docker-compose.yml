@@ -1,9 +1,9 @@
 worker:
   image: canaltp/stat-persistor
-  links:
-    - rabbitmq
+  #links:
+  #  - rabbitmq
   volumes:
-    - /home/vlepot/dev/navitia-stat-logger:/srv/stat-logger
-    - /home/vlepot/dev/navitia-stat-logger/tmp:/tmp
-rabbitmq:
-  image: rabbitmq:management
+    - .:/srv/stat-logger
+    - ./tmp:/tmp
+#rabbitmq:
+#  image: rabbitmq:management
