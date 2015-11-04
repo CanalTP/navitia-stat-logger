@@ -71,9 +71,6 @@ class Daemon(ConsumerMixin):
                 except Exception as e:
                     print e
 
-    def __del__(self):
-        self.close()
-
     def _reopen_logfile(self, log_date):
         expected_logfile_path = self._get_logfile_path(log_date)
         if self.current_logfile_path != expected_logfile_path:
@@ -88,6 +85,9 @@ class Daemon(ConsumerMixin):
 
     def _get_logfile_path(self, log_date):
         return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log'
+
+    def __del__(self):
+        self.close()
 
     def close(self):
         if self.logfile is not None:
