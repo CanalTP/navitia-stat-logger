@@ -7,6 +7,8 @@ import kombu
 from kombu.mixins import ConsumerMixin
 from datetime import datetime
 from pywebhdfs.webhdfs import PyWebHdfsClient
+import os
+import platform
 
 
 class Daemon(ConsumerMixin):
@@ -16,7 +18,8 @@ class Daemon(ConsumerMixin):
         self.config = config
         self._init_rabbitmq()
         if self.config['storage']['localfs']:
-            self.logfile = open('/tmp/stat_log_prod_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.json.log', 'a')
+            self.logfile = None
+            self.current_logfile_path=''
         # Initialize WebHDFS client
         if self.config['storage']['hdfs']:
             self.hdfs = PyWebHdfsClient(host=config['webhdfs']['host'], port=config['webhdfs']['port'], timeout=config['webhdfs']['timeout'])
@@ -57,12 +60,12 @@ class Daemon(ConsumerMixin):
             content = json.dumps(protobuf_to_dict(stat_hit), separators=(',', ':')) + '\n'
 
             if self.config['storage']['localfs']:
+                self._reopen_logfile(datetime.utcfromtimestamp(stat_hit.request_date))
                 self.logfile.write(content)
                 self.logfile.flush()
 
             if self.config['storage']['hdfs']:
                 target_filename = self.filename_template.replace('{request_date}', datetime.utcfromtimestamp(stat_hit.request_date).strftime('%Y%m%d'))
-                print target_filename
                 try:
                     self.hdfs.append_file(target_filename, content)
                 except Exception as e:
@@ -71,7 +74,23 @@ class Daemon(ConsumerMixin):
     def __del__(self):
         self.close()
 
+    def _reopen_logfile(self, log_date):
+        expected_logfile_path = self._get_logfile_path(log_date)
+        if self.current_logfile_path != expected_logfile_path:
+            if self.logfile is not None:
+                self.logfile.close()
+            print "Opening file " + expected_logfile_path
+            expected_log_dir = os.path.dirname(expected_logfile_path)
+            if not os.path.isdir(expected_log_dir):
+                os.makedirs(expected_log_dir)
+            self.logfile = open(expected_logfile_path, 'a')
+            self.current_logfile_path = expected_logfile_path
+
+    def _get_logfile_path(self, log_date):
+        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log'
+
     def close(self):
-        self.logfile.close()
+        if self.logfile is not None:
+            self.logfile.close()
         if self.connection and self.connection.connected:
             self.connection.release()
