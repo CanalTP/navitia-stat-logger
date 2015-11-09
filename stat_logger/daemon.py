@@ -9,6 +9,7 @@ from datetime import datetime
 from pywebhdfs.webhdfs import PyWebHdfsClient
 import os
 import platform
+import gzip
 
 
 class Daemon(ConsumerMixin):
@@ -80,11 +81,11 @@ class Daemon(ConsumerMixin):
             expected_log_dir = os.path.dirname(expected_logfile_path)
             if not os.path.isdir(expected_log_dir):
                 os.makedirs(expected_log_dir)
-            self.logfile = open(expected_logfile_path, 'a')
+            self.logfile = gzip.open(expected_logfile_path, 'a')
             self.current_logfile_path = expected_logfile_path
 
     def _get_logfile_path(self, log_date):
-        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log'
+        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log.gz'
 
     def __del__(self):
         self.close()
