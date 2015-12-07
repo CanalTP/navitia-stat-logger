@@ -11,6 +11,9 @@ import os
 import platform
 import gzip
 
+import avro.schema
+from avro.datafile import DataFileReader, DataFileWriter
+from avro.io import DatumReader, DatumWriter
 
 class Daemon(ConsumerMixin):
     def __init__(self, config):
@@ -25,6 +28,8 @@ class Daemon(ConsumerMixin):
         if self.config['storage']['hdfs']:
             self.hdfs = PyWebHdfsClient(host=config['webhdfs']['host'], port=config['webhdfs']['port'], timeout=config['webhdfs']['timeout'])
             self.filename_template = config['webhdfs']['filename_template']
+        self.schema = avro.schema.parse(open("stat.avsc").read())
+        self.treated_items = 0
 
     def _init_rabbitmq(self):
         """
@@ -55,14 +60,19 @@ class Daemon(ConsumerMixin):
 
         self.log_message(stat_request)
         message.ack()
+        self.treated_items += 1
+        if self.treated_items % 100 == 0:
+            print "Checkpoint: Treated items = " + str(self.treated_items)
 
     def log_message(self, stat_hit):
         if stat_hit.IsInitialized():
-            content = json.dumps(protobuf_to_dict(stat_hit), separators=(',', ':')) + '\n'
+            contentDict = protobuf_to_dict(stat_hit)
+            content = json.dumps(contentDict, separators=(',', ':')) + '\n'
 
             if self.config['storage']['localfs']:
                 self._reopen_logfile(datetime.utcfromtimestamp(stat_hit.request_date))
-                self.logfile.write(content)
+                # self.logfile.write(content)
+                self.logfile.append(contentDict)
                 self.logfile.flush()
 
             if self.config['storage']['hdfs']:
@@ -81,11 +91,14 @@ class Daemon(ConsumerMixin):
             expected_log_dir = os.path.dirname(expected_logfile_path)
             if not os.path.isdir(expected_log_dir):
                 os.makedirs(expected_log_dir)
-            self.logfile = gzip.open(expected_logfile_path, 'a')
+            if not os.path.exists(expected_logfile_path):
+                self.logfile = DataFileWriter(open(expected_logfile_path, 'wb'), DatumWriter(), self.schema, codec='deflate')
+            else:
+                self.logfile = DataFileWriter(open(expected_logfile_path, 'ab+'), DatumWriter())
             self.current_logfile_path = expected_logfile_path
 
     def _get_logfile_path(self, log_date):
-        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log.gz'
+        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.avro'
 
     def __del__(self):
         self.close()

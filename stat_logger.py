@@ -38,7 +38,7 @@ def main():
     except:
         logging.exception('fatal error')
         sys.exit(2)
-
+    print "Treated items = " + str(daemon.treated_items)
     sys.exit(0)
 
 if __name__ == "__main__":

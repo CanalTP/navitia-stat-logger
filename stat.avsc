@@ -1,0 +1,232 @@
+{
+  "namespace": "navitia.stat",
+  "type": "record",
+  "name": "Request",
+  "fields": [
+    {"name": "request_date", "type": ["null", "long"]},
+    {"name": "user_id", "type": ["null", "int"]},
+    {"name": "user_name", "type": ["null", "string"]},
+    {"name": "application_id", "type": ["null", "int"]},
+    {"name": "application_name", "type": ["null", "string"]},
+    {"name": "request_duration", "type": ["null", "int"]},
+    {"name": "api", "type": ["null", "string"]},
+    {"name": "path", "type": ["null", "string"]},
+    {"name": "host", "type": ["null", "string"]},
+    {"name": "response_size", "type": ["null", "int"]},
+    {"name": "client", "type": ["null", "string"]},
+    {"name": "end_point_id", "type": ["null", "int"]},
+    {"name": "end_point_name", "type": ["null", "string"]},
+    {
+      "name": "coverages",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items":   {
+            "type": "record",
+            "name": "Coverage",
+            "fields": [
+              {"name": "region_id", "type": ["null", "string"]}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "error",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Error",
+          "fields": [
+            {"name": "id", "type": ["null", "string"]},
+            {"name": "message", "type": ["null", "string"]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "journey_request",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "JourneyRequest",
+          "fields": [
+            {"name": "requested_date_time", "type": "long"},
+            {"name": "clockwise", "type": "boolean"},
+            {"name": "departure_insee", "type": ["null", "string"]},
+            {"name": "departure_admin", "type": ["null", "string"]},
+            {"name": "arrival_insee", "type": ["null", "string"]},
+            {"name": "arrival_admin", "type": ["null", "string"]},
+            {"name": "departure_admin_name", "type": ["null", "string"]},
+            {"name": "arrival_admin_name", "type": ["null", "string"]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "info_response",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "InfoResponse",
+          "fields": [
+            {"name": "object_count", "type": ["null", "int"]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "parameters",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "Parameter",
+            "fields": [
+              {"name": "key", "type": ["null", "string"]},
+              {"name": "value", "type": ["null", "string"]}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "journeys",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "Journey",
+            "fields": [
+              {"name": "requested_date_time", "type": ["null", "long"]},
+              {"name": "departure_date_time", "type": ["null", "long"]},
+              {"name": "arrival_date_time", "type": ["null", "long"]},
+              {"name": "duration", "type": ["null", "int"]},
+              {"name": "nb_transfers", "type": ["null", "int"]},
+              {"name": "type", "type": ["null", "string"]},
+              {"name": "first_pt_id", "type": ["null", "string"]},
+              {"name": "first_pt_name", "type": ["null", "string"]},
+              {
+                "name": "first_pt_coord",
+                "type": ["null", {
+                  "name": "GeographicalCoord",
+                  "type": "record",
+                  "fields": [
+                    {"name": "lon", "type": "double"},
+                    {"name": "lat", "type": "double"}
+                  ]
+                }]
+              },
+              {"name": "first_pt_admin_id", "type": ["null", "string"]},
+              {"name": "first_pt_admin_name", "type": ["null", "string"]},
+              {"name": "first_pt_admin_insee", "type": ["null", "string"]},
+              {"name": "last_pt_id", "type": ["null", "string"]},
+              {"name": "last_pt_name", "type": ["null", "string"]},
+              {
+                "name": "last_pt_coord",
+                "type": ["null", "GeographicalCoord"]
+              },
+              {"name": "last_pt_admin_id", "type": ["null", "string"]},
+              {"name": "last_pt_admin_name", "type": ["null", "string"]},
+              {"name": "last_pt_admin_insee", "type": ["null", "string"]},
+              {
+                "name": "sections",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "Section",
+                    "fields": [
+                      {"name": "departure_date_time", "type": ["null", "long"]},
+                      {"name": "arrival_date_time", "type": ["null", "long"]},
+                      {"name": "duration", "type": ["null", "int"]},
+                      {"name": "type", "type": ["null", "string"]},
+                      {"name": "mode", "type": ["null", "string"]},
+
+                      {"name": "from_embedded_type", "type": ["null", "string"]},
+                      {"name": "from_id", "type": ["null", "string"]},
+                      {"name": "from_name", "type": ["null", "string"]},
+                      {
+                        "name": "from_coord",
+                        "type": ["null", "GeographicalCoord"]
+                      },
+                      {"name": "from_admin_id", "type": ["null", "string"]},
+                      {"name": "from_admin_name", "type": ["null", "string"]},
+
+                      {"name": "to_embedded_type", "type": ["null", "string"]},
+                      {"name": "to_id", "type": ["null", "string"]},
+                      {"name": "to_name", "type": ["null", "string"]},
+                      {
+                        "name": "to_coord",
+                        "type": ["null", "GeographicalCoord"]
+                      },
+                      {"name": "to_admin_id", "type": ["null", "string"]},
+                      {"name": "to_admin_name", "type": ["null", "string"]},
+
+                      {"name": "vehicle_journey_id", "type": ["null", "string"]},
+                      {"name": "line_id", "type": ["null", "string"]},
+                      {"name": "line_code", "type": ["null", "string"]},
+                      {"name": "route_id", "type": ["null", "string"]},
+                      {"name": "network_id", "type": ["null", "string"]},
+                      {"name": "network_name", "type": ["null", "string"]},
+                      {"name": "physical_mode_id", "type": ["null", "string"]},
+                      {"name": "physical_mode_name", "type": ["null", "string"]},
+                      {"name": "commercial_mode_id", "type": ["null", "string"]},
+                      {"name": "commercial_mode_name", "type": ["null", "string"]},
+                      {"name": "from_admin_insee", "type": ["null", "string"]},
+                      {"name": "to_admin_insee", "type": ["null", "string"]}
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "interpreted_parameters",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "name": "InterpretedParameter",
+            "type": "record",
+            "fields": [
+              {"name": "key", "type": ["null", "string"]},
+              {"name": "value", "type": ["null", "string"]},
+              {
+                "name": "filters",
+                "type": [
+                  "null",
+                  {
+                    "type": "array",
+                    "items": {
+                      "name": "Filter",
+                      "type": "record",
+                      "fields": [
+                        {"name": "object", "type": "string"},
+                        {"name": "attribute", "type": "string"},
+                        {"name": "operator", "type": "string"},
+                        {"name": "value", "type": "string"}
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
