@@ -1,16 +1,5 @@
-venv/
+/venv/
 /tmp/
 *_pb2.py
 *.pyc
-
-# Eclipse files
-.project
-.settings/
-.buildpath
-.pydevproject
-
-# Netbeans
-/nbproject
-
-# PyCharm / IntelliJ
-/.idea
+/build
