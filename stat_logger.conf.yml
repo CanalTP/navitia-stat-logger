@@ -4,7 +4,6 @@ storage:
 localfs:
   root_dir: "/tmp"
 rabbitmq:
-  #broker-url: "amqp://guest:guest@vippriv-brokk-mq.mutu.prod.canaltp.fr:5672//"
   broker-url: "amqp://guest:guest@par-vm147.srv.canaltp.fr:5672//?heartbeat=60"
   exchange-name: "stat_persistor_exchange"
 webhdfs:
