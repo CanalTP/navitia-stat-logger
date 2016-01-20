@@ -13,8 +13,8 @@ POC of a statistics logger in JSON log format (one JSON message per line)
 
 ```
 git clone https://github.com/vincentlepot/navitia-stat-logger
-git submodule update --init
 cd navitia-stat-logger
+git submodule update --init
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
