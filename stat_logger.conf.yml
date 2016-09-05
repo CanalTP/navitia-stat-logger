@@ -2,7 +2,7 @@ storage:
   hdfs: false
   localfs: true
 localfs:
-  root_dir: <%= ENV['LOGS_DIRECTORY'] %>
+  root_dir: /var/logs/navitia-stat-logger
 rabbitmq:
   broker-url: amqp://guest:guest@<%= ENV['RABBITMQ_HOST'] %>:5672//?heartbeat=60
   exchange-name: "stat_persistor_exchange_topic"
