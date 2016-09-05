@@ -2,10 +2,10 @@ storage:
   hdfs: false
   localfs: true
 localfs:
-  root_dir: "/tmp"
+  root_dir: <%= ENV['LOGS_DIRECTORY'] %>
 rabbitmq:
-  broker-url: "amqp://guest:guest@par-vm147.srv.canaltp.fr:5672//?heartbeat=60"
-  exchange-name: "stat_persistor_exchange"
+  broker-url: amqp://guest:guest@<%= ENV['RABBITMQ_HOST'] %>:5672//?heartbeat=60
+  exchange-name: "stat_persistor_exchange_topic"
 webhdfs:
   host: "172.17.42.1"
   port: 50070
