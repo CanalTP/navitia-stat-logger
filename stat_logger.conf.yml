@@ -6,6 +6,7 @@ localfs:
 rabbitmq:
   broker-url: amqp://guest:guest@<%= ENV['RABBITMQ_HOST'] %>:5672//?heartbeat=60
   exchange-name: "stat_persistor_exchange_topic"
+  queue-name: "stat_logger"
 webhdfs:
   host: "172.17.42.1"
   port: 50070
