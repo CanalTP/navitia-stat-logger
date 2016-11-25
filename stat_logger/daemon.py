@@ -31,6 +31,7 @@ class Daemon(ConsumerMixin):
         """
         self.connection = kombu.Connection(self.config['rabbitmq']['broker-url'])
         exchange_name = self.config['rabbitmq']['exchange-name']
+        queue_name = self.config['rabbitmq']['queue-name']
         exchange = kombu.Exchange(exchange_name, type="topic")
         logging.getLogger('stat_logger').info("listen following exchange: %s", exchange_name)
         print "listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker-url'])
