@@ -1,7 +1,7 @@
 argparse==1.2.1
 logging
 pyyaml
-kombu==3.0.26
+kombu==3.0.30
 protobuf==2.6.1
 protobuf-to-dict
 pywebhdfs

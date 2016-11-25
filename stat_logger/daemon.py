@@ -9,7 +9,6 @@ from datetime import datetime
 from pywebhdfs.webhdfs import PyWebHdfsClient
 import os
 import platform
-import gzip
 
 
 class Daemon(ConsumerMixin):
@@ -32,11 +31,11 @@ class Daemon(ConsumerMixin):
         """
         self.connection = kombu.Connection(self.config['rabbitmq']['broker-url'])
         exchange_name = self.config['rabbitmq']['exchange-name']
-        exchange = kombu.Exchange(exchange_name, type="direct")
+        exchange = kombu.Exchange(exchange_name, type="topic")
         logging.getLogger('stat_logger').info("listen following exchange: %s", exchange_name)
-        print ("listen following exchange: {}".format(exchange_name))
+        print "listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker-url'])
 
-        queue = kombu.Queue(exchange=exchange, durable=False, auto_delete=True)
+        queue = kombu.Queue(exchange=exchange, durable=False, auto_delete=True, routing_key="#")
         self.queues.append(queue)
         
     def get_consumers(self, Consumer, channel):
@@ -81,11 +80,11 @@ class Daemon(ConsumerMixin):
             expected_log_dir = os.path.dirname(expected_logfile_path)
             if not os.path.isdir(expected_log_dir):
                 os.makedirs(expected_log_dir)
-            self.logfile = gzip.open(expected_logfile_path, 'a')
+            self.logfile = open(expected_logfile_path, 'a')
             self.current_logfile_path = expected_logfile_path
 
     def _get_logfile_path(self, log_date):
-        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log.gz'
+        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log'
 
     def __del__(self):
         self.close()

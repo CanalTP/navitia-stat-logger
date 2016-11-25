@@ -10,6 +10,8 @@ import argparse
 import yaml
 from exceptions import KeyboardInterrupt
 import logging
+import os
+import re
 from stat_logger.daemon import Daemon
 
 def main():
@@ -18,7 +20,23 @@ def main():
     """
     parser = argparse.ArgumentParser(description="This service logs stat messages from Navitia 2 to file in JSON format")
     parser.add_argument('config_file', type=str)
-    config_file = ""
+
+    #Include environment variables into config file using <%= ENV['YOUR_VAR'] %> pattern
+    pattern = re.compile('^(.*)\<%= ENV\[\'(.*)\'\] %\>(.*)$')
+
+    yaml.add_implicit_resolver("!pathex", pattern)
+
+    def pathex_constructor(loader, node):
+        value = loader.construct_scalar(node)
+        beginVal, envVar, endVal = pattern.match(value).groups()
+        if envVar not in os.environ:
+            print "Environment variable {0:s} should be defined".format(envVar)
+            sys.exit(1)
+        return beginVal + os.environ[envVar] + endVal
+
+    yaml.add_constructor('!pathex', pathex_constructor)
+
+
     try:
         args = parser.parse_args()
         config_file = args.config_file
