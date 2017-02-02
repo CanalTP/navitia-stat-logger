@@ -1,4 +1,5 @@
 import logging
+from logging.config import dictConfig
 import stat_logger.stat_pb2
 from google.protobuf.message import DecodeError
 import json
@@ -16,6 +17,7 @@ class Daemon(ConsumerMixin):
         self.connection = None
         self.queues = []
         self.config = config
+        logging.config.dictConfig(config['logger'])
         self._init_rabbitmq()
         if self.config['storage']['localfs']:
             self.logfile = None
@@ -32,8 +34,7 @@ class Daemon(ConsumerMixin):
         self.connection = kombu.Connection(self.config['rabbitmq']['broker-url'])
         exchange_name = self.config['rabbitmq']['exchange-name']
         exchange = kombu.Exchange(exchange_name, type="topic")
-        logging.getLogger('stat_logger').info("listen following exchange: %s", exchange_name)
-        print "listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker-url'])
+        logging.getLogger('stat_logger').info("listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker-url']))
 
         queue = kombu.Queue(exchange=exchange, durable=False, auto_delete=True, routing_key="#")
         self.queues.append(queue)
