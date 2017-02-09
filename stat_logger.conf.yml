@@ -2,10 +2,11 @@ storage:
   hdfs: false
   localfs: true
 localfs:
-  root_dir: /var/log/navitia-stat-logger/stat-data
+  root_dir: /srv/stat-data
 rabbitmq:
   broker-url: amqp://guest:guest@<%= ENV['RABBITMQ_HOST'] %>:5672//?heartbeat=60
   exchange-name: "stat_persistor_exchange_topic"
+  auto-delete: <%= ENV['RABBITMQ_AUTODELETE'] %>
 webhdfs:
   host: "172.17.42.1"
   port: 50070
