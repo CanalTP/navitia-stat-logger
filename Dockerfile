@@ -17,4 +17,4 @@ WORKDIR /opt/navitia-stat-logger
 RUN protoc -Inavitia-proto --python_out=stat_logger navitia-proto/*.proto
 
 VOLUME /srv/stat-data
-CMD ["./stat_logger.py", "./stat_logger.conf.yml"]
+CMD ["./stat_logger.py"]
