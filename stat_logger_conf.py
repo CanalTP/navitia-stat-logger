@@ -10,9 +10,9 @@ config = {
     },
     "rabbitmq": {
         "broker_url": os.getenv('RABBITMQ_BROKER_URL'),
-        "exchange_name": "stat_persistor_exchange_topic",
+        "exchange_name": os.getenv('RABBITMQ_EXCHANGE_NAME', 'stat_persistor_exchange_topic'),
         "auto_delete": os.getenv('RABBITMQ_AUTODELETE', False),
-        "queue_name": os.getenv('RABBITMQ_QUEUE_NAME', '')
+        "queue_name": os.getenv('RABBITMQ_QUEUE_NAME', 'stat_logger')
     },
     "logger": {
         "version": 1,
