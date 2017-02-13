@@ -21,11 +21,11 @@ pip install -r requirements.txt
 protoc -Inavitia-proto --python_out=stat_logger navitia-proto/*.proto
 ```
 
-And adapt stat_logger.conf.yml to your needs
+And adapt stat_logger_conf.py to your needs
 
 ## Execution
 
 ```
 source venv/bin/activate
-python stat_logger.py stat_logger.conf.yml
+./stat_logger.py
 ```

@@ -13,7 +13,8 @@ ADD requirements.txt /tmp/requirements.txt
 RUN pip install -qr /tmp/requirements.txt && rm -f /tmp/requirements.txt
 
 ADD . /opt/navitia-stat-logger
-
 WORKDIR /opt/navitia-stat-logger
 RUN protoc -Inavitia-proto --python_out=stat_logger navitia-proto/*.proto
-CMD ["./stat_logger.py", "./stat_logger.conf.yml"]
+
+VOLUME /srv/stat-data
+CMD ["./stat_logger.py"]

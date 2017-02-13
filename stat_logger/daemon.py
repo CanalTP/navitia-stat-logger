@@ -1,4 +1,5 @@
 import logging
+from logging.config import dictConfig
 import stat_logger.stat_pb2
 from google.protobuf.message import DecodeError
 import json
@@ -16,28 +17,31 @@ class Daemon(ConsumerMixin):
         self.connection = None
         self.queues = []
         self.config = config
+        logging.config.dictConfig(config['logger'])
         self._init_rabbitmq()
         if self.config['storage']['localfs']:
             self.logfile = None
-            self.current_logfile_path=''
+            self.current_logfile_path = ''
         # Initialize WebHDFS client
         if self.config['storage']['hdfs']:
-            self.hdfs = PyWebHdfsClient(host=config['webhdfs']['host'], port=config['webhdfs']['port'], timeout=config['webhdfs']['timeout'])
+            self.hdfs = PyWebHdfsClient(host=config['webhdfs']['host'], port=config['webhdfs']['port'],
+                                        timeout=config['webhdfs']['timeout'])
             self.filename_template = config['webhdfs']['filename_template']
 
     def _init_rabbitmq(self):
         """
         connect to rabbitmq and init the queues
         """
-        self.connection = kombu.Connection(self.config['rabbitmq']['broker-url'])
-        exchange_name = self.config['rabbitmq']['exchange-name']
+        self.connection = kombu.Connection(self.config['rabbitmq']['broker_url'])
+        exchange_name = self.config['rabbitmq']['exchange_name']
         exchange = kombu.Exchange(exchange_name, type="topic")
-        logging.getLogger('stat_logger').info("listen following exchange: %s", exchange_name)
-        print "listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker-url'])
+        logging.getLogger('stat_logger').info(
+            "listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker_url']))
 
-        queue = kombu.Queue(exchange=exchange, durable=False, auto_delete=True, routing_key="#")
+        queue = kombu.Queue(name=self.config['rabbitmq']['queue_name'], exchange=exchange, durable=False,
+                            auto_delete=self.config['rabbitmq']['auto_delete'], routing_key="#")
         self.queues.append(queue)
-        
+
     def get_consumers(self, Consumer, channel):
         return [Consumer(queues=self.queues, callbacks=[self.process_task])]
 
@@ -48,7 +52,7 @@ class Daemon(ConsumerMixin):
             logging.getLogger('stat_logger').debug('query received: {}'.format(str(stat_request)))
         except DecodeError as e:
             logging.getLogger('stat_logger').warn("message is not a valid "
-                "protobuf task: {}".format(str(e)))
+                                                  "protobuf task: {}".format(str(e)))
             message.ack()
             return
 
@@ -65,7 +69,8 @@ class Daemon(ConsumerMixin):
                 self.logfile.flush()
 
             if self.config['storage']['hdfs']:
-                target_filename = self.filename_template.replace('{request_date}', datetime.utcfromtimestamp(stat_hit.request_date).strftime('%Y%m%d'))
+                target_filename = self.filename_template.replace('{request_date}', datetime.utcfromtimestamp(
+                    stat_hit.request_date).strftime('%Y%m%d'))
                 try:
                     self.hdfs.append_file(target_filename, content)
                 except Exception as e:
@@ -84,7 +89,9 @@ class Daemon(ConsumerMixin):
             self.current_logfile_path = expected_logfile_path
 
     def _get_logfile_path(self, log_date):
-        return self.config['localfs']['root_dir'] + '/' + log_date.strftime('%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(os.getpid()) + '.json.log'
+        return self.config['localfs']['root_dir'] + '/' + log_date.strftime(
+            '%Y/%m/%d') + '/stat_log_prod_' + log_date.strftime('%Y%m%d') + '_' + platform.node() + '_' + str(
+            os.getpid()) + '.json.log'
 
     def __del__(self):
         self.close()

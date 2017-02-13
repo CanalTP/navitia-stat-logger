@@ -1,9 +1,0 @@
-worker:
-  image: canaltp/stat-persistor
-  #links:
-  #  - rabbitmq
-  volumes:
-    - .:/srv/stat-logger
-    - ./tmp:/tmp
-#rabbitmq:
-#  image: rabbitmq:management
