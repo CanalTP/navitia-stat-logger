@@ -38,7 +38,7 @@ class Daemon(ConsumerMixin):
         logging.getLogger('stat_logger').info(
             "listen exchange {0:s} on {1:s}".format(exchange_name, self.config['rabbitmq']['broker_url']))
 
-        queue = kombu.Queue(name=self.config['rabbitmq']['queue_name'], exchange=exchange, durable=False,
+        queue = kombu.Queue(name=self.config['rabbitmq']['queue_name'], exchange=exchange, durable=True,
                             auto_delete=self.config['rabbitmq']['auto_delete'], routing_key="#")
         self.queues.append(queue)
 
