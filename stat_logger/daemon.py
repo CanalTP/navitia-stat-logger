@@ -74,14 +74,14 @@ class Daemon(ConsumerMixin):
                 try:
                     self.hdfs.append_file(target_filename, content)
                 except Exception as e:
-                    print e
+                    print (e)
 
     def _reopen_logfile(self, log_date):
         expected_logfile_path = self._get_logfile_path(log_date)
         if self.current_logfile_path != expected_logfile_path:
             if self.logfile is not None:
                 self.logfile.close()
-            print "Opening file " + expected_logfile_path
+            print ("Opening file " + expected_logfile_path)
             expected_log_dir = os.path.dirname(expected_logfile_path)
             if not os.path.isdir(expected_log_dir):
                 os.makedirs(expected_log_dir)
