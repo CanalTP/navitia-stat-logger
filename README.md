@@ -4,7 +4,7 @@ POC of a statistics logger in JSON log format (one JSON message per line)
 
 ## Pre-requisites
 
-* Python 2.7
+* Python 3.6.8
 * virtualenv
 * pip
 * protobuf-compiler

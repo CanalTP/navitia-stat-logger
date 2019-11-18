@@ -6,7 +6,7 @@
 """
 
 import sys
-from exceptions import KeyboardInterrupt
+from builtins import KeyboardInterrupt
 import logging
 from stat_logger_conf import config
 from stat_logger.daemon import Daemon

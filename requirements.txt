@@ -1,7 +1,4 @@
-argparse==1.2.1
-logging
-pyyaml
-kombu==3.0.30
-protobuf==2.6.1
-protobuf-to-dict
-pywebhdfs
+kombu==4.6.5
+protobuf==3.10.0
+protobuf3-to-dict==0.1.5
+pywebhdfs==0.4.1
